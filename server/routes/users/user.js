@@ -152,16 +152,26 @@ router.post('/delete',checkadmin,async(req,res)=>{
     const {error}=validation.deleteuservalidation(req.body)
     if(error) return res.send({"error":error.details[0].message})
 
-    const checkadmin= await user.find({"user_role":"admin"})
-    if(checkadmin.length===1){return res.send({"error":"Atleast one administrator is required"})}
-
-// only user id from front end
+    const finduser=await user.findOne({"_id":req.body.user_id})
+    if(finduser.user_role==='admin'){
+        const checkadmin= await user.find({"user_role":"admin"})
+        if(checkadmin.length===1){return res.send({"error":"Atleast one administrator is required"})}
+        else{
+            try{
+                const deleteuser= await user.findOneAndUpdate({"_id":req.body.user_id,"status":true},{
+                    "status":false
+                },{useFindAndModify:false,new:true})
+                if(await deleteuser){return res.send({"success":"Deleted user"})}else{/* redirect to error page */ return res.send({"error":"Error deleting user from database"})}
+            }catch{err=>{ return res.send({"error":"No such user found"})}}
+        }
+    }else{
     try{
-        const deleteuser= await user.findOneAndUpdate({"_id":req.body.user_id,"status":true},{
-            "status":false
-        },{useFindAndModify:false,new:true})
-        if(await deleteuser){return res.send({"success":"Deleted user"})}else{/* redirect to error page */ return res.send({"error":"Error deleting user from database"})}
-    }catch{err=>{ return res.send({"error":"No such user found"})}}
+            const deleteuser= await user.findOneAndUpdate({"_id":req.body.user_id,"status":true},{
+                "status":false
+            },{useFindAndModify:false,new:true})
+            if(await deleteuser){return res.send({"success":"Deleted user"})}else{/* redirect to error page */ return res.send({"error":"Error deleting user from database"})}
+        }catch{err=>{ return res.send({"error":"No such user found"})}}
+    }
 })
 
 router.post('/verify',async(req,res)=>{     
