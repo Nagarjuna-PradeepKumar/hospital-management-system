@@ -5,6 +5,7 @@
         <!-- family history -->
         <v-card id="family_history" class="yellow lighten-2 mb-2">
           <v-card-title>Family history</v-card-title>
+          <v-card-subtitle v-if="patient_record.family_history.length === 0">No data found</v-card-subtitle>
           <v-expansion-panels inset>
             <v-expansion-panel
               v-for="(item, i) in patient_record.family_history"
