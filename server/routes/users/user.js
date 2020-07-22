@@ -17,7 +17,7 @@ router.post('/create',async(req,res)=>{
     if(error) return res.send({"error":error.details[0].message})
 
     if(req.body.user_role==="admin"){
-    const checkadmin= await user.find({"user_role":"admin"})
+        const checkadmin = await user.find({ "user_role": "admin","status":true})
     if(await checkadmin.length>=2){return res.send({"error":"Cannot create more than 2 administrators"})}
     }
         const salt = await bcrypt.genSalt(10);
@@ -105,7 +105,7 @@ router.post('/changedata',checkadmin,async(req,res)=>{
 
     const finduser=await user.findOne({"_id":req.body.user_id})
     if(finduser.user_role==='admin' && req.body.user_role!="admin"){
-    const checkadmin= await user.find({"user_role":"admin"})
+    const checkadmin= await user.find({"user_role":"admin","status":true})
     if(checkadmin.length>=2){return res.send({"error":"Cannot create more than 2 administrators"})}
     else if(checkadmin.length===1){return res.send({"error":"Atleast one administrator is required"})}}
     else{
@@ -154,7 +154,7 @@ router.post('/delete',checkadmin,async(req,res)=>{
 
     const finduser=await user.findOne({"_id":req.body.user_id})
     if(finduser.user_role==='admin'){
-        const checkadmin= await user.find({"user_role":"admin"})
+        const checkadmin= await user.find({"user_role":"admin","status":true})
         if(checkadmin.length===1){return res.send({"error":"Atleast one administrator is required"})}
         else{
             try{
