@@ -35,7 +35,7 @@ router.post('/create',async(req,res)=>{
         const isuser = await user.findOne({"phoneno":req.body.phoneno,user_name:req.body.user_name,"status":true})
         if(isuser){return res.send({"error":"This user is already saved"})}
         if(!isuser){
-            const savednewuser = await newuser.save();
+            const savednewuser = await newuser.save()
             if(savednewuser){
                 const isattendence = await new attendence({"user_id":await savednewuser._id,"user_name":req.body.user_name,"user_role":req.body.user_role,"phoneno":req.body.phoneno}).save()
                 if(isattendence){return res.send({"success":await savednewuser.user_role})}}
