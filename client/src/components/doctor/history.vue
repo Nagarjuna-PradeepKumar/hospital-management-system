@@ -254,7 +254,7 @@ export default {
     },
     deletehistory: function(comment_id, target) {
       this.$axios
-        .post("/record/" + target, {
+        .post("/patient/record/" + target, {
           patient_id: this.patient_data._id,
           comment_id: comment_id,
         })
@@ -266,7 +266,7 @@ export default {
     },
     deletecomplaint: function(complaint_id) {
       this.$axios
-        .post("/complaint/delete", {
+        .post("/patient/complaint/delete", {
           patient_id: this.patient_data._id,
           complaint_id: complaint_id,
         })

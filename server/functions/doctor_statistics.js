@@ -1,102 +1,113 @@
-const record=require('../Database_schemas/patient-record_schema')
+const record = require("../models/patient-record_schema");
 
+async function getdatas(doctor_id) {
+  let getcasetotal = new Promise(async (resolve, reject) => {
+    const totalcases = await record.aggregate([
+      {
+        $match: {
+          "complaint_history.doctor_id": doctor_id,
+        },
+      },
+      {
+        $project: {
+          complaint_history: {
+            $filter: {
+              input: "$complaint_history",
+              as: "name",
+              cond: {
+                $eq: ["$$name.doctor_id", doctor_id],
+              },
+            },
+          },
+        },
+      },
+      {
+        $unwind: {
+          path: "$complaint_history",
+          preserveNullAndEmptyArrays: false,
+        },
+      },
+      {
+        $count: "totalcases",
+      },
+    ]);
+    if (totalcases) {
+      resolve({ totalcases: totalcases });
+    } else {
+      reject("error");
+    }
+  });
 
-async function getdatas(doctor_id){
-    let getcasetotal = new Promise(async(resolve,reject)=>{
-        const totalcases= await record.aggregate([
-            {
-                '$match': {
-                    'complaint_history.doctor_id': doctor_id
-                }
-            }, {
-                '$project': {
-                    'complaint_history': {
-                        '$filter': {
-                            'input': '$complaint_history', 
-                            'as': 'name', 
-                            'cond': {
-                                '$eq': [
-                                    '$$name.doctor_id',doctor_id
-                                ]
-                            }
-                        }
-                    }
-                }
-            }, {
-                '$unwind': {
-                    'path': '$complaint_history', 
-                    'preserveNullAndEmptyArrays': false
-                }
-            }, {
-                '$count': 'totalcases'
-            }
-        ])
-        if(totalcases){resolve({"totalcases":totalcases})}else{reject("error")}
-    })
-
-    let getmedicinecount=new Promise(async(resolve,reject)=>{
-        const medicinecount= await record.aggregate([
-            {
-              '$match': {
-                'complaint_history.doctor_id': doctor_id
-              }
-            }, {
-              '$project': {
-                'complaint_history': {
-                  '$filter': {
-                    'input': '$complaint_history', 
-                    'as': 'name', 
-                    'cond': {
-                      '$eq': [
-                        '$$name.doctor_id', doctor_id
-                      ]
-                    }
-                  }
-                }
-              }
-            }, {
-              '$project': {
-                'complaint_history.medication.medicine_name': 1
-              }
-            }, {
-              '$unwind': {
-                'path': '$complaint_history', 
-                'preserveNullAndEmptyArrays': false
-              }
-            }, {
-              '$unwind': {
-                'path': '$complaint_history.medication', 
-                'preserveNullAndEmptyArrays': false
-              }
-            }, {
-              '$unwind': {
-                'path': '$complaint_history.medication.medicine_name', 
-                'preserveNullAndEmptyArrays': false
-              }
-            }, {
-              '$group': {
-                '_id': '$complaint_history.medication.medicine_name', 
-                'count': {
-                  '$sum': 1
-                }
-              }
-            }, {
-              '$sort': {
-                'count': -1
-              }
-            }
-          ])
-          if(medicinecount){resolve({"medicine_history":medicinecount})}else{reject("error")}
-    })
-    let quotefetcher= new Promise((resolve,reject)=>{
-      resolve({"quote":quotes[Math.floor(Math.random() * 20) + 1  ]});
-    })
-    return Promise.all([getcasetotal,getmedicinecount,quotefetcher])
+  let getmedicinecount = new Promise(async (resolve, reject) => {
+    const medicinecount = await record.aggregate([
+      {
+        $match: {
+          "complaint_history.doctor_id": doctor_id,
+        },
+      },
+      {
+        $project: {
+          complaint_history: {
+            $filter: {
+              input: "$complaint_history",
+              as: "name",
+              cond: {
+                $eq: ["$$name.doctor_id", doctor_id],
+              },
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          "complaint_history.medication.medicine_name": 1,
+        },
+      },
+      {
+        $unwind: {
+          path: "$complaint_history",
+          preserveNullAndEmptyArrays: false,
+        },
+      },
+      {
+        $unwind: {
+          path: "$complaint_history.medication",
+          preserveNullAndEmptyArrays: false,
+        },
+      },
+      {
+        $unwind: {
+          path: "$complaint_history.medication.medicine_name",
+          preserveNullAndEmptyArrays: false,
+        },
+      },
+      {
+        $group: {
+          _id: "$complaint_history.medication.medicine_name",
+          count: {
+            $sum: 1,
+          },
+        },
+      },
+      {
+        $sort: {
+          count: -1,
+        },
+      },
+    ]);
+    if (medicinecount) {
+      resolve({ medicine_history: medicinecount });
+    } else {
+      reject("error");
+    }
+  });
+  let quotefetcher = new Promise((resolve, reject) => {
+    resolve({ quote: quotes[Math.floor(Math.random() * 20) + 1] });
+  });
+  return Promise.all([getcasetotal, getmedicinecount, quotefetcher]);
 }
 
-
-
-const quotes=[
+const quotes = [
   "You’re such a wonderful doctor and you always make me feel so safe. Thank you for being the best doctor for me.",
   "Thank you so much for all your hard work and support during this difficult time. Your humility, kindness and strength are greatly appreciated.",
   "To me, you’re a magician, a great physician, a special gift from God. Thank you so much for all your contribution and efforts that you do to keep us well.",
@@ -116,7 +127,7 @@ const quotes=[
   "Your wonderful treatment and loving care have shown results doc. You deserve my heartfelt thanks. May the Lord shower His blessings!",
   "Being in a hospital is a terrible experience, but you made me feel like home. Your caring and extra effort to make your patient comfortable is truly remarkable. Thank you, Doctor!",
   "Thank you so much for doing a great job for us. You’ve always been successful to keep our spirits up and maintaining good health.",
-  "Countless thanks to the entire doctor’s who are working day and night for keeping us safe. Wishing them heartiest gratitude for their greatest contribution."
-]
+  "Countless thanks to the entire doctor’s who are working day and night for keeping us safe. Wishing them heartiest gratitude for their greatest contribution.",
+];
 
-module.exports={getdatas}
+module.exports = { getdatas };

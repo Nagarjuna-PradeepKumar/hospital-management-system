@@ -492,7 +492,7 @@ export default {
     submitToken: function() {
       console.log("asdasd");
       this.$axios
-        .post("/que/add", {
+        .post("/patient/que/add", {
           patient_id: this.singleform.patient_id,
           patient_name: this.singleform.patient_name,
           visiting_doctor: this.visiting_doctor,

@@ -78,7 +78,7 @@ export default {
       (this.fetchedque = []),
         (this.attendingque = []),
         (this.waitingque = []),
-        this.$axios.post("/que/get").then(Response => {
+        this.$axios.post("/patient/que/get").then(Response => {
           if (Response.data.success.length > 0) {
             Response.data.success.map(x => {
               if (x.quetype === "waiting") {
@@ -96,7 +96,7 @@ export default {
     },
     letin: function(item) {
       this.$axios
-        .post("/que/letinside", { patient_id: item.patient_id })
+        .post("/patient/que/letinside", { patient_id: item.patient_id })
         .then(Response => {
           if (Response.data.success) {
             const index = this.waitingque.indexOf(item);
@@ -109,7 +109,7 @@ export default {
     },
     checkout: function(item) {
       this.$axios
-        .post("/que/delete", { patient_id: item.patient_id })
+        .post("/patient/que/delete", { patient_id: item.patient_id })
         .then(Response => {
           if (Response.data.success) {
             const index = this.attendingque.indexOf(item);
@@ -127,7 +127,7 @@ export default {
     },
     left: function(item) {
       this.$axios
-        .post("/que/delete", { patient_id: item.patient_id })
+        .post("/patient/que/delete", { patient_id: item.patient_id })
         .then(Response => {
           if (Response.data.success) {
             const index = this.waitingque.indexOf(item);

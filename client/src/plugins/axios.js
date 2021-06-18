@@ -4,7 +4,7 @@ import Cookies from "universal-cookie";
 
 const cookies = new Cookies();
 
-const devInstance = createInstance("http://localhost:5000");
+const devInstance = createInstance("http://localhost:5000/api");
 
 function createInstance(baseURL) {
   return axios.create({

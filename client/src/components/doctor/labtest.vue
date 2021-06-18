@@ -209,7 +209,7 @@ export default {
       let submit = await this.datas.map(x => {
         return new Promise((resolve, reject) => {
           this.$axios
-            .post("/complaint/addlabresult", {
+            .post("/patient/complaint/addlabresult", {
               patient_id: this.patient_data._id,
               labtest_id: this.currentitem.labtest_id,
               test: x.test,
@@ -242,7 +242,7 @@ export default {
     },
     deleteresult: function(labtestid, id) {
       this.$axios
-        .post("/complaint/dellabresult", {
+        .post("/patient/complaint/dellabresult", {
           patient_id: this.patient_data._id,
           labtest_id: labtestid,
           result_id: id
@@ -259,7 +259,7 @@ export default {
     },
     deletelabtest: function(labtestid) {
       this.$axios
-        .post("/complaint/dellabtest", {
+        .post("/patient/complaint/dellabtest", {
           patient_id: this.patient_data._id,
           labtest_id: labtestid,
         })

@@ -634,7 +634,7 @@ export default {
     submitaddhistory: function() {
       if (this.$refs.historyform.validate()) {
         this.$axios
-          .post(`/record/add${this.historymodal.type}`, {
+          .post(`/patient/record/add${this.historymodal.type}`, {
             patient_id: this.patient_data._id,
             subject: this.historymodal.subject,
             comment: this.historymodal.comment
@@ -709,12 +709,12 @@ export default {
     }},
     submitallmedicine: function() {
       this.$axios
-        .post("/complaint/create", { patient_id: this.patient_data._id,"doctor_name":this.doctorname,"doctor_id":this.doctor_id})
+        .post("/patient/complaint/create", { patient_id: this.patient_data._id,"doctor_name":this.doctorname,"doctor_id":this.doctor_id})
         .then(Response => {
           if (Response.data.success) {
             (this.maincomplaints.complaint_id = Response.data.success),
               this.$axios
-                .post("/complaint/addcomplaint", {
+                .post("/patient/complaint/addcomplaint", {
                   patient_id: this.patient_data._id,
                   complaint_id: Response.data.success,
                   complaints: this.maincomplaints.complaints,
@@ -731,7 +731,7 @@ export default {
                     });
                     if (this.maincomplaints.showlabtest) {
                       this.$axios
-                        .post("/complaint/createlabtest", {
+                        .post("/patient/complaint/createlabtest", {
                           patient_id: this.patient_data._id,
                           complaint_id: this.maincomplaints.complaint_id
                         })
@@ -740,7 +740,7 @@ export default {
                             this.maincomplaints.labtest_id =
                               Response.data.success;
                             this.$axios
-                              .post("/complaint/addlabtest", {
+                              .post("/patient/complaint/addlabtest", {
                                 patient_id: this.patient_data._id,
                                 labtest_id: Response.data.success,
                                 test_suggested: this.maincomplaints.labtestnames
@@ -756,7 +756,7 @@ export default {
                                   this.maincomplaints.show = false;
                                 }
                                 if (Response.data.error) {
-                                  this.$axios.post("/complaint/dellabtest", {
+                                  this.$axios.post("/patient/complaint/dellabtest", {
                                     patient_id: this.patient_data._id,
                                     labtest_id: this.maincomplaints.labtest_id
                                   });
@@ -774,7 +774,7 @@ export default {
                     }
                   }
                   if (Response.data.error) {
-                    this.$axios.post("/complaint/delete", {
+                    this.$axios.post("/patient/complaint/delete", {
                       complaint_id: this.maincomplaints.complaint_id
                     });
                     this.dialogdata.title = "Error";
@@ -786,7 +786,7 @@ export default {
                 });
           }
           if (Response.data.error) {
-            this.$axios.post("/complaint/delete", {
+            this.$axios.post("/patient/complaint/delete", {
               complaint_id: this.maincomplaints.complaint_id
             });
             this.dialogdata.title = "Error";
@@ -799,7 +799,7 @@ export default {
     },
     deletehistory: function(item, i) {
       this.$axios
-        .post(`/record/del${item.type}`, {
+        .post(`/patient/record/del${item.type}`, {
           patient_id: this.patient_data._id,
           comment_id: item.comment_id
         })
@@ -818,7 +818,7 @@ export default {
     },
     deletecomplaint: function(complaint_id, i) {
       this.$axios
-        .post("/complaint/delete", {
+        .post("/patient/complaint/delete", {
           patient_id: this.patient_data._id,
           complaint_id: complaint_id
         })

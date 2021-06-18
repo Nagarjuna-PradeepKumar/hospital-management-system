@@ -73,7 +73,7 @@ export default {
       (this.fetchedque = []),
         (this.attendingque = []),
         (this.waitingque = []),
-        this.$axios.post("/que/get").then(Response => {
+        this.$axios.post("/patient/que/get").then(Response => {
           if (Response.data.success.length > 0) {
             console.log(Response.data.success);
             Response.data.success.map(x => {

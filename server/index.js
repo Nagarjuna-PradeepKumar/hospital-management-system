@@ -14,24 +14,12 @@ app.use(cors());
 app.use(express.json());
 
 /* import routes*/
-const user = require("./routes/users/user");
-const patient = require("./routes/patient/patient_create_edit");
-const record = require("./routes/patient/patient_record");
-const complaint = require("././routes/patient/patient_complaint");
-const que = require("./routes/patient/patient_que");
-const plancalendar = require("./routes/users/plancalendar");
-const attendence = require("./routes/users/attendence");
-const doctor = require("./routes/doctor_statistics/doctorstats");
-/* route middlewares */
-app.use("/user", user);
-app.use("/patient", patient);
-app.use("/record", record);
-app.use("/complaint", complaint);
-app.use("/que", que);
-app.use("/calendar", plancalendar);
-app.use("/attendence", attendence);
-app.use("/doctorstats", doctor);
+const routehandler = require("./router");
 
+/* route middlewares */
+app.use("/api", routehandler);
+
+/* Serve static files in production */
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(__dirname + "/public"));
   app.get("*", (req, res) =>
@@ -39,10 +27,12 @@ if (process.env.NODE_ENV === "production") {
   );
 }
 
+/**Connect to mongoDB */
 mongoose.connect(
-  "mongodb://localhost:27017/Hospital",
+  process.env.mongoConnectionstring,
   { useNewUrlParser: true, useUnifiedTopology: true },
   () => console.log("connected to database")
 );
 
+/**Listen on Port */
 app.listen(PORT, () => console.log("server is started at port " + PORT));

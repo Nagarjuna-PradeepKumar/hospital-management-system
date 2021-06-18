@@ -84,7 +84,7 @@ export default {
           if (Response.data.success) {
             this.patient_data = Response.data.success;
             this.$axios
-              .post("/record/getall", { patient_id: this.patient_id })
+              .post("/patient/record/getall", { patient_id: this.patient_id })
               .then(Response => {
                 if (Response.data.success) {
                   this.patient_record = Response.data.success;
@@ -106,7 +106,7 @@ export default {
           if (Response.data.success) {
             this.patient_data = Response.data.success;
             this.$axios
-              .post("/record/getall", { patient_id: this.patient_id })
+              .post("/patient/record/getall", { patient_id: this.patient_id })
               .then(Response => {
                 if (Response.data.success) {
                   this.patient_record = Response.data.success;
