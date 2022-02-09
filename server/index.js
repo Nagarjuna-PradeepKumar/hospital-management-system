@@ -29,10 +29,21 @@ if (process.env.NODE_ENV === "production") {
 
 /**Connect to mongoDB */
 mongoose.connect(
-  process.env.mongoConnectionstring,
-  { useNewUrlParser: true, useUnifiedTopology: true },
-  () => console.log("connected to database")
-);
+  `mongodb://${user}:${pass}@mongodb:27017/Hospital?authSource=admin`,
+  { 
+    useNewUrlParser: true, 
+    useUnifiedTopology: true 
+  },
+  (err) => {
+    if(err) {
+      console.log('Failed to connect to database')
+      console.log(err)
+    }else{
+      console.log('connected to database')
+      app.listen(PORT, () => console.log("server is started at port " + PORT));
+    }
+  }
+)
 
 /**Listen on Port */
-app.listen(PORT, () => console.log("server is started at port " + PORT));
+

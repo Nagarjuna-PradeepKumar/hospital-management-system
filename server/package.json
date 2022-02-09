@@ -4,7 +4,7 @@
   "description": "hospita management system",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "nodemon -L index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -17,6 +17,7 @@
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.17",
+    "nodemon": "^2.0.15",
     "socket.io": "^4.0.2"
   }
 }
