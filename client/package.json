@@ -13,7 +13,7 @@
     "universal-cookie": "^4.0.3",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
-    "vuetify": "^2.2.11"
+    "vuetify": "^2.6.10"
   },
   "devDependencies": {
     "@mdi/font": "^5.3.45",
