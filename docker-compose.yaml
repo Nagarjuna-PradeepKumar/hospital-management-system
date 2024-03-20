@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  hms-postgres:
+    image: postgres:16.2-bullseye
+    container_name: 'hms-postgres'
+    environment:
+      POSTGRES_DB: hospital-management-system
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./data/hms-postgres:/var/lib/postgresql/data
+  # hms-redis:
+  #   image: redis:alpine3.19
+  #   container_name: 'hms-redis'
+  #   command: [ "redis-server", "--requirepass", "password" ]
+  #   ports:
+  #     - '6379:6379'
+  #   volumes:
+  #     - ./data/hms-redis:/data
