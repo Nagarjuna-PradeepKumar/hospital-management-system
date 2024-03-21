@@ -21,38 +21,17 @@ func main() {
 
 	flag.Parse()
 
-	migrationDirection := strings.ToLower(*mgd)
+	dbMigrationDirection := getMigrationDirection(*mgd)
 
-	if migrationDirection != "up" && migrationDirection != "down" {
-		log.Fatalf("Invalid value '%s' for argument d. \n Flag 'd' should be either up or down", migrationDirection)
-	}
-	var dbMigrationDirection migrate.MigrationDirection
-	if migrationDirection == "up" {
-		dbMigrationDirection = migrate.Up
-	} else {
-		dbMigrationDirection = migrate.Down
-	}
 	err := godotenv.Load("migration.env")
 	if err != nil {
 		fmt.Println(".env file not found. Loading environment variables from system")
 	}
 
-	dbName := os.Getenv("POSTGRES_DB")
-	dbHost := os.Getenv("POSTGRES_DB_HOST")
-	dbUser := os.Getenv("POSTGRES_DB_USER")
-	dbPassword := os.Getenv("POSTGRES_DB_PASSWORD")
-	if dbName == "" {
-		log.Fatal("Invalid Database Name")
-	}
-	if dbHost == "" {
-		log.Fatal("Invalid Database Host")
-	}
-	if dbUser == "" {
-		log.Fatal("Invalid Database User")
-	}
-	if dbPassword == "" {
-		log.Fatal("Invalid Database Password")
-	}
+	dbName := getEnvVar("POSTGRES_DB", "Database Name")
+	dbHost := getEnvVar("POSTGRES_DB_HOST", "Database Host")
+	dbUser := getEnvVar("POSTGRES_DB_USER", "Database User")
+	dbPassword := getEnvVar("POSTGRES_DB_PASSWORD", "Database Password")
 
 	databaseURL := fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable", dbUser, dbPassword, dbHost, dbName)
 
@@ -66,7 +45,6 @@ func main() {
 	// Directory containing migration files
 	migrationsDir := "sql-migrations"
 
-	// Create a new FileMigrationSource
 	fileMigrationSource := &migrate.FileMigrationSource{
 		Dir: migrationsDir,
 	}
@@ -76,22 +54,42 @@ func main() {
 		migrateToVersion(db, *fileMigrationSource, dbMigrationDirection, *migrateTill)
 	}
 }
-
 func migrateToVersion(db *sql.DB, migrationSource migrate.FileMigrationSource, migrationDirection migrate.MigrationDirection, migrateUptoFile string) {
-	migrations, err := migrationSource.FindMigrations()
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	var targetVersion int
-	// Finding Target Version
-	for i, migration := range migrations {
-		if migration.Id == migrateUptoFile {
-			targetVersion = i + 1
+	var message string
+	var err error
+	var currentMigrationDataLength int
+
+	if migrationDirection == migrate.Up {
+		migrations, err := migrationSource.FindMigrations()
+		if err != nil {
+			log.Fatal(err)
 		}
-	}
-	if targetVersion == 0 {
-		log.Fatal("Invalid Migrate Till Value")
+		for i, migration := range migrations {
+			if migration.Id == migrateUptoFile {
+				targetVersion = i + 1
+				break
+			}
+		}
+		if targetVersion == 0 {
+			log.Fatal("Invalid Migrate Till Value")
+		}
+	} else {
+		currentMigrationData, err := migrate.GetMigrationRecords(db, "postgres")
+		if err != nil {
+			log.Fatal(err)
+		}
+		currentMigrationDataLength = len((currentMigrationData))
+
+		for i, migration := range currentMigrationData {
+			if migration.Id == migrateUptoFile {
+				targetVersion = currentMigrationDataLength - i
+				break
+			}
+		}
+		if targetVersion == 0 {
+			log.Fatal("Invalid Migrate Till Value")
+		}
 	}
 
 	// Migrate up to the target version
@@ -99,14 +97,42 @@ func migrateToVersion(db *sql.DB, migrationSource migrate.FileMigrationSource, m
 	if err != nil {
 		log.Print(err)
 	}
-	log.Printf("Migrated to version %d!\n", targetVersion)
-	log.Printf("Applied %d migrations!\n", n)
 
+	if migrationDirection == migrate.Up {
+		message = fmt.Sprintf("Migrated to version %d!", targetVersion)
+	} else {
+		message = fmt.Sprintf("Migrated to version %d!", currentMigrationDataLength-targetVersion)
+	}
+
+	log.Printf("%s\nApplied %d migrations!\n", message, n)
 }
+
 func completeMigration(db *sql.DB, migrationSource migrate.FileMigrationSource, migrationDirection migrate.MigrationDirection) {
 	n, err := migrate.Exec(db, "postgres", migrationSource, migrationDirection)
 	if err != nil {
 		log.Print(err)
 	}
 	log.Printf("Applied %d migrations!\n", n)
+}
+
+func getMigrationDirection(direction string) migrate.MigrationDirection {
+
+	migrationDirection := strings.ToLower(direction)
+
+	if migrationDirection != "up" && migrationDirection != "down" {
+		log.Fatalf("Invalid value '%s' for argument d. \n Flag 'd' should be either up or down", migrationDirection)
+	}
+
+	if direction == "down" {
+		return migrate.Down
+	}
+	return migrate.Up
+}
+
+func getEnvVar(key, label string) string {
+	val := os.Getenv(key)
+	if val == "" {
+		log.Fatalf("Invalid %s", label)
+	}
+	return val
 }
