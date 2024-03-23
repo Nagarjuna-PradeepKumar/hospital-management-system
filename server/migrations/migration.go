@@ -4,12 +4,11 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"os"
 	"strings"
 
 	"flag"
 
-	"github.com/joho/godotenv"
+	"github.com/Nagarjuna-PradeepKumar/hospital-management-system/utils"
 	_ "github.com/lib/pq" // Import the database driver
 	migrate "github.com/rubenv/sql-migrate"
 )
@@ -23,15 +22,15 @@ func main() {
 
 	dbMigrationDirection := getMigrationDirection(*mgd)
 
-	err := godotenv.Load("migration.env")
+	err := utils.LoadEnvironmentVariables("migration.env")
 	if err != nil {
 		fmt.Println(".env file not found. Loading environment variables from system")
 	}
 
-	dbName := getEnvVar("POSTGRES_DB", "Database Name")
-	dbHost := getEnvVar("POSTGRES_DB_HOST", "Database Host")
-	dbUser := getEnvVar("POSTGRES_DB_USER", "Database User")
-	dbPassword := getEnvVar("POSTGRES_DB_PASSWORD", "Database Password")
+	dbName := utils.GetEnvVar("POSTGRES_DB", "Database Name")
+	dbHost := utils.GetEnvVar("POSTGRES_DB_HOST", "Database Host")
+	dbUser := utils.GetEnvVar("POSTGRES_DB_USER", "Database User")
+	dbPassword := utils.GetEnvVar("POSTGRES_DB_PASSWORD", "Database Password")
 
 	databaseURL := fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable", dbUser, dbPassword, dbHost, dbName)
 
@@ -127,12 +126,4 @@ func getMigrationDirection(direction string) migrate.MigrationDirection {
 		return migrate.Down
 	}
 	return migrate.Up
-}
-
-func getEnvVar(key, label string) string {
-	val := os.Getenv(key)
-	if val == "" {
-		log.Fatalf("Invalid %s", label)
-	}
-	return val
 }
