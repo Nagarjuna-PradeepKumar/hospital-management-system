@@ -1,8 +1,9 @@
-package users
+package entities
 
 import (
 	"time"
 
+	"github.com/Nagarjuna-PradeepKumar/hospital-management-system/pkg/enums"
 	"github.com/google/uuid"
 )
 
@@ -27,7 +28,7 @@ type UserAddress struct {
 }
 
 type Roles struct {
-	Id     uuid.UUID `json:"id"`
-	UserId uuid.UUID `json:"UserId"`
-	Role   UserRole  `json:"Role"`
+	Id     uuid.UUID      `json:"id"`
+	UserId uuid.UUID      `json:"UserId"`
+	Role   enums.UserRole `json:"Role"`
 }

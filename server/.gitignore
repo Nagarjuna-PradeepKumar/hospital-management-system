@@ -1,1 +1,3 @@
-migration.env
+# environment variables
+*.env
+

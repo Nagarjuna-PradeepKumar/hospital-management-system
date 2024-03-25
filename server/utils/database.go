@@ -5,12 +5,13 @@ import (
 	"sync"
 
 	"github.com/gofiber/fiber/v2/log"
+	_ "github.com/lib/pq"
 )
 
 var once sync.Once
 var db *sql.DB
 
-func InitDatabase(dbSource string) {
+func InitDatabase(dbSource string) *sql.DB {
 	var err error
 	once.Do(func() {
 		db, err = sql.Open("postgres", dbSource)
@@ -19,13 +20,14 @@ func InitDatabase(dbSource string) {
 		}
 		log.Info("postgres connection established")
 	})
+	return db
 }
 
 func GetDB() *sql.DB {
 	return db
 }
 
-func CloseDB(logger log.Logger) {
+func CloseDB() {
 	if db != nil {
 		err := db.Close()
 		if err != nil {

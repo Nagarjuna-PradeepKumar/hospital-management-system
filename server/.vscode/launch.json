@@ -1,24 +1,26 @@
 {
-    "version": "0.2.0",
-    "compounds": [
-      {
-        "name": "all services",
-        "configurations": [
-          "hms",
-        ],
-        "stopAll": true
+  "version": "0.2.0",
+  "compounds": [
+    {
+      "name": "all services",
+      "configurations": ["hms"],
+      "stopAll": true
+    }
+  ],
+  "configurations": [
+    {
+      "name": "hms",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/main.go",
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "POSTGRES_DB": "hospital-management-system",
+        "POSTGRES_DB_HOST": "localhost",
+        "POSTGRES_DB_USER": "admin",
+        "POSTGRES_DB_PASSWORD": "password"
       }
-    ],
-    "configurations": [
-      {
-        "name": "hms",
-        "type": "go",
-        "request": "launch",
-        "mode": "auto",
-        "program": "${workspaceFolder}/main.go",
-        "cwd": "${workspaceFolder}",
-        "env": {
-        }
-      }
-    ]
-  }
+    }
+  ]
+}

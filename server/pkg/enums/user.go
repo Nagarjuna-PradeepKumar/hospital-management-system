@@ -1,4 +1,4 @@
-package users
+package enums
 
 type userRole int
 
