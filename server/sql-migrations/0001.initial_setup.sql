@@ -7,6 +7,8 @@
 CREATE TABLE IF NOT EXISTS users(
     id uuid not null constraint user_pk primary key,
     user_name text not null,
+    display_name text not null,
+    CONSTRAINT unique_user_name UNIQUE (display_name),
     user_password text not null,
     phone_no varchar(15),
     last_login timestamp,

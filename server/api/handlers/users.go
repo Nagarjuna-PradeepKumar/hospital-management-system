@@ -21,9 +21,9 @@ func CreateUser(service users.UserService) fiber.Handler {
 			c.Status(http.StatusBadRequest)
 			return errors.New("please enter name and password")
 		}
-		userId, err := service.CreateUser(requestBody.UserName, requestBody.PhoneNumber, requestBody.Password)
+
+		userId, err := service.CreateUser(c, requestBody.UserName, requestBody.DisplayName, requestBody.PhoneNumber, requestBody.Password)
 		if err != nil {
-			c.Status(http.StatusInternalServerError)
 			return err
 		}
 

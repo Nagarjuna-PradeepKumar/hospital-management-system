@@ -4,6 +4,7 @@ import "github.com/google/uuid"
 
 type CreateUserRequest struct {
 	UserName    string `json:"userName"`
+	DisplayName string `json:"displayName"`
 	PhoneNumber string `json:"phoneNumber"`
 	Password    string `json:"password"`
 }

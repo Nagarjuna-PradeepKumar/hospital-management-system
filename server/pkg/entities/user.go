@@ -10,9 +10,10 @@ import (
 type User struct {
 	Id           uuid.UUID `json:"id"`
 	UserName     string    `json:"userName"`
+	DisplayName  string    `json:"displayName"`
 	UserPassword string    `json:"userPassword"`
 	PhoneNumber  string    `json:"phoneNumber"`
-	LastLogin    string    `json:"lastLogin"`
+	LastLogin    time.Time `json:"lastLogin"`
 	CreatedAt    time.Time `json:"createdAt"`
 	UpdatedAt    time.Time `json:"updatedAt"`
 }

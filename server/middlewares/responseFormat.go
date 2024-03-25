@@ -30,6 +30,9 @@ func formatResponse() fiber.Handler {
 		if err != nil {
 			errMsgStr := err.Error()
 			errMsg = &errMsgStr
+			if statusCode == fiber.StatusOK {
+				statusCode = fiber.StatusInternalServerError
+			}
 		}
 		// Formatting the response
 		response := struct {
