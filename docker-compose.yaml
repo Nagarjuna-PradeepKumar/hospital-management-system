@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:17.4
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: hospital_db
+    volumes:
+      - ./datas/pg-db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+  redis:
+    image: redis:7.0
+    container_name: redis-db
+    volumes:
+      - ./datas/redis-db:/data
+    ports:
+      - "6379:6379"
