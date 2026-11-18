@@ -5,7 +5,7 @@ const userController = require("../../../controller/users/user_details");
 /**
  * Route for Creating User
  */
-router.post("/create", async (req, res) => {
+router.post("/create", checkadmin, async (req, res) => {
   userController.createUser(req, res);
 });
 /**
